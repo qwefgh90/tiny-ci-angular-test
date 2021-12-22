@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tiny-cicd": {
+      "hosting": {
+        "a-angular": [
+          "tiny-cicd"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tiny-cicd"
+  }
+}

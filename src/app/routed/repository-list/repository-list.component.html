@@ -1,0 +1,19 @@
+<div class="content">
+    <p-table [value]="repositories" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Repository</th>
+                <th style="width: 20rem;">Toggle for CI/CD</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-repository>
+            <tr>
+                <td>{{repository.owner}}/{{repository.name}}</td>
+                <td>
+                    <p-inputSwitch [(ngModel)]="repository.automationEnabled"
+                        (onChange)="changeToggle(repository, $event.checked)"></p-inputSwitch>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

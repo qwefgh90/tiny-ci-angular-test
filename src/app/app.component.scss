@@ -1,0 +1,16 @@
+@import 'bootstrap/scss/bootstrap.scss';
+
+.header{
+    @extend .p-3;
+    min-height: 3rem;
+    @extend .bg-info;
+    @extend .bg-opacity-50;
+}
+
+.header a{
+    @extend .text-black-50;
+}
+
+.content{
+    min-height: 0px;
+}

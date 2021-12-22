@@ -1,0 +1,5 @@
+@import 'bootstrap/scss/bootstrap.scss';
+
+div.content{
+    @extend .container;
+}

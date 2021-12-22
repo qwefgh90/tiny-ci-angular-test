@@ -1,0 +1,13 @@
+@import 'bootstrap/scss/bootstrap.scss';
+.item{
+    @extend .p-3;
+}
+
+.list{
+    width: 15rem;
+    overflow-y: auto;
+}
+
+.content{
+    height: 100%;
+}

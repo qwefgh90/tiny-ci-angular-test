@@ -1,0 +1,2 @@
+<p-button label="Sign in" *ngIf="status == AuthStatus.NOT_SIGNED_IN_YET" (click)="login()"></p-button>
+<p-splitButton label="{{displayMessage}}" [model]="items" *ngIf="status == AuthStatus.SIGNED_IN"></p-splitButton>
