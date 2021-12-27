@@ -1,10 +1,23 @@
 @import 'bootstrap/scss/bootstrap.scss';
 .item{
+    cursor: pointer;
     @extend .p-3;
+    @extend .bg-body;
+    @extend .rounded;
+    @extend .mb-2;
+    @extend .border;
 }
-
+.item:hover{
+    @extend .border-primary;
+}
+.item:nth-child(2){
+    @extend .mt-2;
+}
 .list{
-    width: 15rem;
+    @extend .ps-4;
+    @extend .pe-5;
+    @extend .pt-4;
+    min-width: 25rem;
     overflow-y: auto;
 }
 

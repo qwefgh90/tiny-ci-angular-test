@@ -2,6 +2,8 @@
 
 .header{
     @extend .p-3;
+    @extend .pe-5;
+    @extend .ps-5;
     min-height: 3rem;
     @extend .bg-info;
     @extend .bg-opacity-50;

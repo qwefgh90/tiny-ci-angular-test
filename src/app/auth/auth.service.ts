@@ -1,19 +1,26 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AuthCredential, OAuthCredential, User, UserCredential } from 'firebase/auth';
+import { AuthCredential, OAuthCredential, UserCredential } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { User } from '../model/user';
 import { AuthStatus } from './auth-status';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private __authObserver: Subject<AuthStatus> = new Subject();
-  get authObserver(): Observable<AuthStatus>{
+  private __authObserver = new BehaviorSubject(AuthStatus.NOT_SIGNED_IN_YET);
+  private __userObserver = new BehaviorSubject<(User & {jwt: string}) | undefined>(undefined);
+  
+  get authObserver(): Observable<AuthStatus> {
     return this.__authObserver.asObservable();
   }
-  constructor(public fireAuth: AngularFireAuth, public auth: AngularFireAuth) {
+  get userObserver(): Observable<(User & {jwt: string}) | undefined> {
+    return this.__userObserver.asObservable();
+  }
+  constructor(public fireAuth: AngularFireAuth, public auth: AngularFireAuth, public httpClient: HttpClient) {
     auth.authState.subscribe({
       next: (user) => {
         console.debug(`user: `, user?.toJSON());
@@ -21,21 +28,49 @@ export class AuthService {
         console.debug(`error: ${error}`);
       }
     });
-  }
-
-  private loginWithCredential(_credential: firebase.auth.UserCredential) {
-    const credential = _credential as firebase.auth.UserCredential & { operationType: string, credential: OAuthCredential, additionalUserInfo: GithubAdditionalUserInfo, user: User };
-    if(credential?.operationType == "signIn"){
-      const token = credential.credential.accessToken as string;
-      const fireId = credential.user.uid;
-      console.debug('important cred: ', token, fireId);
-      //login in server
-      
+    this.__authObserver.subscribe({next: (status) => {
+      if(status == AuthStatus.SIGNED_IN){
+        let jwt = localStorage.getItem("jwt") as string;
+        httpClient.get<User>("http://localhost:8082/user", {headers: {'Authorization' : `Bearer ${jwt}`}, withCredentials: true}).subscribe({
+          next: (user) => {
+            this.__userObserver.next({...user, jwt});
+          }
+        });
+      }
+    }});
+    if(localStorage.getItem("jwt")){
       this.__authObserver.next(AuthStatus.SIGNED_IN);
     }
   }
 
-  loginWithGithub(){
+  jwt?: string;
+
+  private loginWithCredential(_credential: firebase.auth.UserCredential) {
+    const credential = _credential as firebase.auth.UserCredential & { operationType: string, credential: OAuthCredential, additionalUserInfo: GithubAdditionalUserInfo, user: User };
+    if (credential?.operationType == "signIn") {
+      const token = credential.credential.accessToken as string;
+      const fireId = credential.user.uid;
+      console.debug('important cred: ', token, fireId);
+      //login in server
+      this.httpClient.post("http://localhost:8082/auth/login", { token, fireId }, {observe: 'response'}).subscribe({
+        next: (res) => {
+          let auth = res.headers.get("Authorization");
+          let jwt = auth?.replace("Bearer ", "");
+          console.debug(`jwt: ${jwt}`);
+          if(jwt){
+            localStorage.setItem("jwt", jwt);
+            this.__authObserver.next(AuthStatus.SIGNED_IN);
+          }else{
+            console.warn("It failed to sign in with Github.");
+          }
+
+        }
+      });
+
+    }
+  }
+
+  loginWithGithub() {
     const provider = new firebase.auth.GithubAuthProvider();
     provider.addScope("public_repo");
     this.fireAuth.signInWithPopup(provider).then((cred) => {
@@ -43,8 +78,9 @@ export class AuthService {
     });
   }
 
-  logout(){
+  logout() {
     //logout on server
+    localStorage.removeItem("jwt");
     this.auth.signOut();
     this.__authObserver.next(AuthStatus.NOT_SIGNED_IN_YET);
   }

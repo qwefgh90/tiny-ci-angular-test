@@ -1,14 +1,44 @@
-
 <div fxLayout="row" class="content">
-    <div class="list">
-        <div *ngFor="let r of repositories" class="item">
-            <div><span>{{r.owner}}/{{r.name}}</span></div>
-            <div><span>3 minutes ago</span></div>
+    <div class="list" fxLayout="column">
+        <div fxLayout="column" fxLayoutAlign="center start">
+            <div class="fs-4 mb-3" *ngIf="selectedRepository"><a href="{{selectedRepository.htmlUrl}}"><i
+                        class="pi pi-github fs-3"></i> {{selectedRepository.owner}}/{{selectedRepository.name}}</a>
+            </div>
+        </div>
+        <div fxFlex style="min-height: 0px; overflow-y: auto;" class="pe-4 mb-4">
+            <ng-container *ngFor="let w of workList">
+                <div class="item" (click)="openWorkHistory(w)">
+                    <div fxLayout="row" class="mb-1">
+                        <h2 class="me-3">#{{w.id}}</h2>
+                        <div>
+                            <div>Commit</div>
+                            <div>{{w.commitId}}</div>
+                        </div>
+                    </div>
+                    <div><span>{{w.startedDate | date}}</span></div>
+                </div>
+            </ng-container>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="mb-4">
+            <p-dropdown [options]="repositories" [(ngModel)]="selectedRepository" (onChange)="onRepositorySelected(selectedRepository)" optionLabel="name" optionLabel="name">
+            </p-dropdown>
         </div>
     </div>
-    
-    <div>
-
-        
+    <div fxFlex fxLayout="column" class="ps-1 pt-5 pe-5 pb-5">
+        <ng-container *ngIf="selectedWork">
+            <div fxLayout="row" fxLayoutAlign="end center" class="pb-3">
+                <div>
+                    <h3>History (#{{selectedWork.id}})</h3>
+                    <div class="fs-6">commit: {{selectedWork.commitId}}</div>
+                </div>
+                <div fxFlex></div>
+                <div>
+                    <button pButton pRipple type="button" label="Start CI/CD" class="p-button-success"></button>
+                </div>
+            </div>
+            <div fxFlex>
+                <ng-terminal [draggable]="false" #ngTerminal></ng-terminal>
+            </div>
+        </ng-container>
     </div>
 </div>

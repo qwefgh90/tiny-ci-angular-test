@@ -24,12 +24,13 @@
     "@angular/router": "~13.1.0",
     "bootstrap": "^5.1.3",
     "firebase": "^9.6.1",
+    "ng-terminal": "^4.0.0-alpha",
     "primeicons": "^5.0.0",
     "primeng": "^13.0.3",
+    "rxfire": "^6.0.0",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4",
-    "rxfire": "^6.0.0"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.1.2",

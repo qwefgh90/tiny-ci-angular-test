@@ -18,6 +18,9 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire/compat';
+import { HttpClientModule } from '@angular/common/http';
+import {DropdownModule} from 'primeng/dropdown';
+import { NgTerminalModule } from 'ng-terminal';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,11 +34,14 @@ import { AngularFireModule } from '@angular/fire/compat';
     BrowserAnimationsModule,
     FormsModule,
     AppRoutingModule,
+    DropdownModule,
+    HttpClientModule,
     FlexLayoutModule,
     ButtonModule,
     SplitButtonModule,
     InputSwitchModule,
     TableModule,
+    NgTerminalModule,
     AngularFireModule.initializeApp(environment.firebase),
     // provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth())
