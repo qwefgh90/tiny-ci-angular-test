@@ -1,0 +1,7 @@
+{
+    "image": "node:17",
+    "cmd": [
+        "npm i ng-terminal --save --legacy-peer-deps",
+        "npm run build"
+    ]
+}
